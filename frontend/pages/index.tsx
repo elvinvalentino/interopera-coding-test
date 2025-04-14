@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useSales } from '../hooks/queries/sales/sales';
-import { useAi } from '../hooks/queries/ai/ai';
+import { useSales } from '../src/hooks/queries/sales/sales';
+import { useAi } from '../src/hooks/queries/ai/ai';
 
 export default function Home() {
   const [question, setQuestion] = useState('');

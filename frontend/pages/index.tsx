@@ -1,51 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState } from 'react';
+import { useSales } from '../hooks/queries/sales/sales';
+import { useAi } from '../hooks/queries/ai/ai';
 
 export default function Home() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
+  const [question, setQuestion] = useState('');
 
-  useEffect(() => {
-    fetch("http://localhost:8000/api/data")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data.users || []);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch data:", err);
-        setLoading(false);
-      });
-  }, []);
-
-  const handleAskQuestion = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/ai", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
-      });
-      const data = await response.json();
-      setAnswer(data.answer);
-    } catch (error) {
-      console.error("Error in AI request:", error);
-    }
-  };
+  const { data: sales, isFetching: isSalesFetching } = useSales();
+  const { data: answer, refetch: askAi } = useAi(question);
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <div style={{ padding: '2rem' }}>
       <h1>Next.js + FastAPI Sample</h1>
 
-      <section style={{ marginBottom: "2rem" }}>
+      <section style={{ marginBottom: '2rem' }}>
         <h2>Dummy Data</h2>
-        {loading ? (
+        {isSalesFetching ? (
           <p>Loading...</p>
         ) : (
           <ul>
-            {users.map((user) => (
-              <li key={user.id}>
-                {user.name} - {user.role}
+            {sales.map(sale => (
+              <li key={sale.id}>
+                {sale.name} - {sale.role}
               </li>
             ))}
           </ul>
@@ -59,12 +34,12 @@ export default function Home() {
             type="text"
             placeholder="Enter your question..."
             value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            onChange={e => setQuestion(e.target.value)}
           />
-          <button onClick={handleAskQuestion}>Ask</button>
+          <button onClick={() => askAi()}>Ask</button>
         </div>
         {answer && (
-          <div style={{ marginTop: "1rem" }}>
+          <div style={{ marginTop: '1rem' }}>
             <strong>AI Response:</strong> {answer}
           </div>
         )}

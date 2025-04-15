@@ -42,6 +42,9 @@ prompt_template = ChatPromptTemplate(
         """
 You are a helpful and intelligent sales data assistant embedded in a sales dashboard. Your job is to help users understand and explore sales data through natural conversation. You have access to structured data, including sales representatives, deals, clients, regions, and performance metrics.
 
+History
+{history}
+
 Context Data:
 {context}
 
@@ -89,6 +92,7 @@ def get_sales_reps():
 
 class AiDto(BaseModel):
     question: str
+    history: str
 
 @app.post("/api/ai")
 async def ai_endpoint(request: AiDto):
@@ -97,7 +101,7 @@ async def ai_endpoint(request: AiDto):
     (Optionally integrate a real AI model or external service here.)
     """
 
-    prompt = prompt_template.invoke({"context": DUMMY_DATA, "question": request.question})
+    prompt = prompt_template.invoke({"context": DUMMY_DATA, "history": request.history, "question": request.question})
     response = llm.invoke(prompt)
     
     # Placeholder logic: echo the question or generate a simple response

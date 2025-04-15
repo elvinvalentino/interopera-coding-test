@@ -1,14 +1,14 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+interface IAiMutationParams {
+  history: string;
+  question: string;
+}
+
 export const useAi = () => {
   return useMutation({
-    mutationFn: async ({
-      history,
-      question,
-    }: {
-      history: string;
-      question: string;
-    }): Promise<string> => {
+    mutationFn: async (params: IAiMutationParams): Promise<string> => {
+      const { history, question } = params;
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/ai`,
         {

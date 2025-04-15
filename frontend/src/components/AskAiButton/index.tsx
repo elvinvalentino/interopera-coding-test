@@ -40,6 +40,9 @@ const AskAiButton: React.FC<IProps> = () => {
 
   const onChatSend = async () => {
     if (isPending || !chat) return;
+    const history = chats
+      .map(chat => `${chat.role === 'bot' ? 'AI' : 'Human'}: ${chat.message}`)
+      .join('\n');
     setChats(prevChats => [
       ...prevChats,
       {
@@ -48,7 +51,7 @@ const AskAiButton: React.FC<IProps> = () => {
       },
     ]);
     setChat('');
-    const answer = await askAi(chat);
+    const answer = await askAi({ question: chat, history });
     setChats(prevChats => [
       ...prevChats,
       {

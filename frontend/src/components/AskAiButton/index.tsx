@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -16,6 +16,7 @@ import { IconMessageChatbot, IconSend2, IconX } from '@tabler/icons-react';
 import classes from './style.module.css';
 import { useDisclosure } from '@mantine/hooks';
 import { useAi } from '../../hooks/queries/ai/ai';
+import Markdown from 'react-markdown';
 
 interface IProps {}
 
@@ -26,6 +27,11 @@ const AskAiButton: React.FC<IProps> = () => {
   >([{ message: 'How can i help you today?', role: 'bot' }]);
   const [chat, setChat] = useState<string>('');
   const { mutateAsync: askAi, isPending } = useAi();
+
+  const bottomRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chats]);
 
   useEffect(() => {
     if (!opened)
@@ -66,7 +72,7 @@ const AskAiButton: React.FC<IProps> = () => {
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
-        <Stack h={300} justify="space-between">
+        <Stack h={400} justify="space-between">
           <Group justify="space-between" align="center">
             <Text size="sm">Chat with AI</Text>
             <CloseButton onClick={toggle} />
@@ -76,7 +82,7 @@ const AskAiButton: React.FC<IProps> = () => {
               {chats.map((chat, idx) =>
                 chat.role === 'bot' ? (
                   <Text key={idx} size="sm">
-                    {chat.message}
+                    <Markdown>{chat.message}</Markdown>
                   </Text>
                 ) : (
                   <Group key={idx} justify="flex-end">
@@ -86,22 +92,30 @@ const AskAiButton: React.FC<IProps> = () => {
                   </Group>
                 )
               )}
+              {isPending && <Loader color="gray" type="dots" />}
+              <div ref={bottomRef} />
             </Stack>
-            {isPending && <Loader color="gray" type="dots" />}
           </Stack>
-          <Group align="center">
-            <Input
-              flex={1}
-              variant="unstyled"
-              placeholder="Ask AI anything..."
-              onChange={e => setChat(e.target.value)}
-              value={chat}
-              disabled={isPending}
-            />
-            <Button size="xs" radius={'xl'} onClick={onChatSend}>
-              {<IconSend2 size={20} />}
-            </Button>
-          </Group>
+          <form onSubmit={e => e.preventDefault()}>
+            <Group align="center">
+              <Input
+                flex={1}
+                variant="unstyled"
+                placeholder="Ask AI anything..."
+                onChange={e => setChat(e.target.value)}
+                value={chat}
+                disabled={isPending}
+              />
+              <Button
+                type="submit"
+                size="xs"
+                radius={'xl'}
+                onClick={onChatSend}
+              >
+                {<IconSend2 size={20} />}
+              </Button>
+            </Group>
+          </form>
         </Stack>
       </Popover.Dropdown>
     </Popover>

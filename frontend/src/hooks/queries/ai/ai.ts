@@ -1,9 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
-export const useAi = (question: string) => {
-  return useQuery({
-    queryKey: ['ai', question],
-    queryFn: async (): Promise<string> => {
+export const useAi = () => {
+  return useMutation({
+    mutationFn: async (question: string): Promise<string> => {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/ai`,
         {
@@ -18,7 +17,5 @@ export const useAi = (question: string) => {
       const data = await response.json();
       return data.answer;
     },
-    enabled: false, // Only run the query if question is not empty
-    refetchOnWindowFocus: false, // Disable refetching on window focus
   });
 };

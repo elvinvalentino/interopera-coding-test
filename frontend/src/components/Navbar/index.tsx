@@ -13,7 +13,7 @@ import classes from './style.module.css';
 export const Navbar = () => {
   return (
     <div className={classes.header}>
-      <Container className={classes.mainSection} size="md">
+      <Container className={classes.mainSection} size="xl">
         <Group justify="space-between">
           <Title order={1}>Dashboard</Title>
 

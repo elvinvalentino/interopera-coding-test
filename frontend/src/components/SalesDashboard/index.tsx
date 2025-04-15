@@ -1,12 +1,12 @@
 import { Center, Container, Loader } from '@mantine/core';
 import { useSales } from '../../hooks/queries/sales/sales';
-import { SalesOverview } from '../SalesOverview';
+import { Sales } from '../Sales';
 
 export const SalesDashboard = () => {
   const { data: sales, isFetching: isSalesFetching } = useSales();
 
   return (
-    <Container size={'md'}>
+    <Container size="xl" mb={'md'}>
       {isSalesFetching && (
         <Center>
           <Loader />
@@ -14,7 +14,7 @@ export const SalesDashboard = () => {
       )}
       {!isSalesFetching && (
         <>
-          <SalesOverview sales={sales} />
+          <Sales sales={sales} />
         </>
       )}
     </Container>

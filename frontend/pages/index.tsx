@@ -3,16 +3,14 @@ import { useSales } from '../src/hooks/queries/sales/sales';
 import { useAi } from '../src/hooks/queries/ai/ai';
 import { Navbar } from '../src/components/Navbar';
 import { SalesDashboard } from '../src/components/SalesDashboard';
+import AskAiButton from '../src/components/AskAiButton';
 
 export default function Home() {
-  const [question, setQuestion] = useState('');
-
-  const { data: answer, refetch: askAi } = useAi(question);
-
   return (
     <>
       <Navbar />
       <SalesDashboard />
+      <AskAiButton />
     </>
   );
 }
